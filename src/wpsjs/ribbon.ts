@@ -2,86 +2,60 @@ import { WPS_Enum } from './tool/util'
 import * as Util from './tool/util'
 import SystemDemo from './tool/systemdemo'
 
-interface Control {
-  Id: string;
-}
-
-interface Application extends WPS.Application {
-  ribbonUI: any;
-  Enum: any;
-  PluginStorage: {
-    setItem: (key: string, value: any) => void;
-    getItem: (key: string) => any;
-  };
-  ActiveDocument: (WPS.Document & { Name: string }) | null;
-  ShowDialog: (url: string, title: string, width: number, height: number, modal: boolean) => void;
-  CreateTaskPane: (url: string) => WPS.TaskPane;
-  GetTaskPane: (id: string) => WPS.TaskPane;
-  ApiEvent: {
-    AddApiEventListener: (eventName: string, callback: string) => void;
-    RemoveApiEventListener: (eventName: string, callback: string) => void;
-  };
-  OAAssist: {
-    WebNotify: (message: string, showInFront: boolean) => void;
-  };
-}
-
-// 声明全局变量
-declare global {
-  interface Window {
-    Application: Application;
-    openOfficeFileFromSystemDemo: any;
-    InvokeFromSystemDemo: any;
-  }
-}
 
 // 这个函数在整个wps加载项中是第一个执行的
 function OnAddinLoad(ribbonUI: any): boolean {
-  if (typeof window.Application.ribbonUI != 'object') {
-    window.Application.ribbonUI = ribbonUI;
+  if (typeof window._Application.ribbonUI != 'object') {
+    window._Application.ribbonUI = ribbonUI;
   }
-
-  if (typeof window.Application.Enum != 'object') {
+  if (typeof window._Application.Enum != 'object') {
     // 如果没有内置枚举值
-    window.Application.Enum = WPS_Enum;
+    window._Application.Enum = WPS_Enum;
   }
 
   // 这几个导出函数是给外部业务系统调用的
   window.openOfficeFileFromSystemDemo = SystemDemo.openOfficeFileFromSystemDemo;
   window.InvokeFromSystemDemo = SystemDemo.InvokeFromSystemDemo;
 
-  window.Application.PluginStorage.setItem('EnableFlag', false); // 往PluginStorage中设置一个标记，用于控制两个按钮的置灰
-  window.Application.PluginStorage.setItem('ApiEventFlag', false); // 往PluginStorage中设置一个标记，用于控制ApiEvent的按钮label
+  window._Application.PluginStorage.setItem('EnableFlag', false); // 往PluginStorage中设置一个标记，用于控制两个按钮的置灰
+  window._Application.PluginStorage.setItem('ApiEventFlag', false); // 往PluginStorage中设置一个标记，用于控制ApiEvent的按钮label
   return true;
 }
 
 let WebNotifycount = 0;
-function OnAction(control: Control): boolean {
+function OnAction(control: any): boolean {
+  console.log('OnAction');
   const eleId = control.Id;
+  alert(2)  
   switch (eleId) {
     case 'btnShowMsg':
       {
-        const doc = window.Application.ActiveDocument;
-        if (!doc) {
-          alert('当前没有打开任何文档');
-          return true;
-        }
-        alert(doc.Name);
+        const strXML = '<?xml version=""1.0""?><abc:books xmlns:abc=""urn:books"" '
+            + 'xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" "'
+            + 'xsi:schemaLocation=""urn:books books.xsd""><book>'
+            + '<author>Matt Hink</author><title>Migration Paths of the Red '
+            + 'Breasted Robin</title><genre>non-fiction</genre>'
+            + '<price>29.95</price><pub_date>2006-05-01</pub_date>'
+            + '<abstract>You see them in the spring outside your windows. '
+            + 'You hear their lovely songs wafting in the warm spring air. '
+            + 'Now follow their path as they migrate to warmer climes in the fall, '
+            + 'and then back to your back yard in the spring.</abstract></book></abc:books>'
+        window._Application.ActiveDocument.Paragraphs.Item(5)?.Range.InsertXML(strXML)
       }
       break;
     case 'btnIsEnbable': {
-      let bFlag = window.Application.PluginStorage.getItem('EnableFlag');
-      window.Application.PluginStorage.setItem('EnableFlag', !bFlag);
+      const bFlag = window._Application.PluginStorage.getItem('EnableFlag');
+      window._Application.setItem('EnableFlag', !bFlag);
 
       // 通知wps刷新以下几个按饰的状态
-      window.Application.ribbonUI.InvalidateControl('btnIsEnbable');
-      window.Application.ribbonUI.InvalidateControl('btnShowDialog');
-      window.Application.ribbonUI.InvalidateControl('btnShowTaskPane');
-      // window.Application.ribbonUI.Invalidate(); 这行代码打开则是刷新所有的按钮状态
+      window._Application.ribbonUI.InvalidateControl('btnIsEnbable');
+      window._Application.ribbonUI.InvalidateControl('btnShowDialog');
+      window._Application.ribbonUI.InvalidateControl('btnShowTaskPane');
+      // window._Application.ribbonUI.Invalidate(); 这行代码打开则是刷新所有的按钮状态
       break;
     }
     case 'btnShowDialog': {
-      window.Application.ShowDialog(
+      window._Application.ShowDialog(
         Util.GetUrlPath() + Util.GetRouterHash() + '/dialog',
         '这是一个对话框网页',
         400 * window.devicePixelRatio,
@@ -92,38 +66,38 @@ function OnAction(control: Control): boolean {
     }
     case 'btnShowTaskPane':
       {
-        let tsId = window.Application.PluginStorage.getItem('taskpane_id');
+        const tsId = window._Application.PluginStorage.getItem('taskpane_id');
         if (!tsId) {
-          let tskpane = window.Application.CreateTaskPane(Util.GetUrlPath() + Util.GetRouterHash() + '/taskpane');
-          let id = tskpane.ID;
-          window.Application.PluginStorage.setItem('taskpane_id', id);
-          tskpane.Visible = true;
+          const tspan = window._Application.CreateTaskPane(Util.GetUrlPath() + Util.GetRouterHash() + '/taskpane');
+          const id = tspan.ID;
+          window._Application.PluginStorage.setItem('taskpane_id', id);
+          tspan.Visible = true;
         } else {
-          let tskpane = window.Application.GetTaskPane(tsId);
-          tskpane.Visible = !tskpane.Visible;
+          const tspan = window._Application.GetTaskPane(tsId);
+          tspan.Visible = !tspan.Visible;
         }
       }
       break;
     case 'btnApiEvent':
       {
-        let bFlag = window.Application.PluginStorage.getItem('ApiEventFlag');
-        let bRegister = bFlag ? false : true;
-        window.Application.PluginStorage.setItem('ApiEventFlag', bRegister);
+        const bFlag = window._Application.PluginStorage.getItem('ApiEventFlag');
+        const bRegister = !bFlag;
+        window._Application.PluginStorage.setItem('ApiEventFlag', bRegister);
         if (bRegister) {
-          window.Application.ApiEvent.AddApiEventListener('DocumentNew', 'ribbon.OnNewDocumentApiEvent');
+          window._Application.ApiEvent.AddApiEventListener('DocumentNew', 'ribbon.OnNewDocumentApiEvent');
         } else {
-          window.Application.ApiEvent.RemoveApiEventListener('DocumentNew', 'ribbon.OnNewDocumentApiEvent');
+          window._Application.ApiEvent.RemoveApiEventListener('DocumentNew', 'ribbon.OnNewDocumentApiEvent');
         }
 
-        window.Application.ribbonUI.InvalidateControl('btnApiEvent');
+        window._Application.ribbonUI.InvalidateControl('btnApiEvent');
       }
       break;
     case 'btnWebNotify':
       {
-        let currentTime = new Date();
-        let timeStr =
+        const currentTime = new Date();
+        const timeStr =
           currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
-        window.Application.OAAssist.WebNotify(
+        window._Application.OAAssist.WebNotify(
           '这行内容由wps加载项主动送达给业务系统，可以任意自定义, 比如时间值:' +
             timeStr +
             '，次数：' +
@@ -138,7 +112,7 @@ function OnAction(control: Control): boolean {
   return true;
 }
 
-function GetImage(control: Control): string {
+function GetImage(control: any): string {
   const eleId = control.Id;
   switch (eleId) {
     case 'btnShowMsg':
@@ -152,17 +126,17 @@ function GetImage(control: Control): string {
   return 'images/newFromTemp.svg';
 }
 
-function OnGetEnabled(control: Control): boolean {
+function OnGetEnabled(control: any): boolean {
   const eleId = control.Id;
   switch (eleId) {
     case 'btnShowMsg':
       return true;
     case 'btnShowDialog': {
-      let bFlag = window.Application.PluginStorage.getItem('EnableFlag');
+      const bFlag = window._Application.PluginStorage.getItem('EnableFlag');
       return !!bFlag;
     }
     case 'btnShowTaskPane': {
-      let bFlag = window.Application.PluginStorage.getItem('EnableFlag');
+      const bFlag = window._Application.PluginStorage.getItem('EnableFlag');
       return !!bFlag;
     }
     default:
@@ -171,21 +145,21 @@ function OnGetEnabled(control: Control): boolean {
   return true;
 }
 
-function OnGetVisible(control: Control): boolean {
+function OnGetVisible(control: any): boolean {
   const eleId = control.Id;
   console.log(eleId);
   return true;
 }
 
-function OnGetLabel(control: Control): string {
+function OnGetLabel(control: any): string {
   const eleId = control.Id;
   switch (eleId) {
     case 'btnIsEnbable': {
-      let bFlag = window.Application.PluginStorage.getItem('EnableFlag');
+      const bFlag = window._Application.PluginStorage.getItem('EnableFlag');
       return bFlag ? '按钮Disable' : '按钮Enable';
     }
     case 'btnApiEvent': {
-      let bFlag = window.Application.PluginStorage.getItem('ApiEventFlag');
+      const bFlag = window._Application.PluginStorage.getItem('ApiEventFlag');
       return bFlag ? '清除新建文件事件' : '注册新建文件事件';
     }
   }
