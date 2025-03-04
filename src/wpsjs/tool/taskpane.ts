@@ -35,13 +35,13 @@ function onbuttonclick(
       const doc = window.Application.ActiveDocument as any;
       if (doc) {
         doc.Range(0, 0).Text = 'Hello, wps加载项!'
-        const rgSel = window.Application.Selection.Range
+        const rgSel = window._Application.Selection.Range
         if (rgSel) rgSel.Select()
       }
       break
     }
     case 'getDocName': {
-      const doc = window.Application.ActiveDocument
+      const doc = window._Application.ActiveDocument
       if (!doc) {
         return '当前没有打开任何文档'
       }

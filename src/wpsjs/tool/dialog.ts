@@ -1,6 +1,6 @@
-import Util from './util'
+import {GetUrlPath} from './util'
 
-function onbuttonclick(idStr: 'getDocName' | 'createTaskPane' | 'newDoc' | 'addString' | 'closeDoc' | 'openWeb', param?: any): string | void {
+function onbuttonclick(idStr: 'getDocName' | 'createTaskPane' | 'newDoc' | 'addString' | 'closeDoc' | 'openWeb'): string | void {
   switch (idStr) {
     case 'getDocName': {
       const doc = window.Application.ActiveDocument
@@ -12,7 +12,7 @@ function onbuttonclick(idStr: 'getDocName' | 'createTaskPane' | 'newDoc' | 'addS
     case 'createTaskPane': {
       const tsId = window.Application.PluginStorage.getItem('taskpane_id')
       if (!tsId) {
-        const tskpane = window.Application.CreateTaskPane(Util.GetUrlPath() + '/taskpane')
+        const tskpane = window.Application.CreateTaskPane(GetUrlPath() + '/taskpane')
         const id = tskpane.ID
         window.Application.PluginStorage.setItem('taskpane_id', id)
         tskpane.Visible = true
@@ -23,7 +23,7 @@ function onbuttonclick(idStr: 'getDocName' | 'createTaskPane' | 'newDoc' | 'addS
       break
     }
     case 'newDoc': {
-      window.Application.Documents.Add()
+      window._Application.Documents.Add()
       break
     }
     case 'addString': {
@@ -31,13 +31,13 @@ function onbuttonclick(idStr: 'getDocName' | 'createTaskPane' | 'newDoc' | 'addS
       if (doc) {
         doc.Range(0, 0).Text = 'Hello, wps加载项!'
         // 触发重绘
-        const rgSel = window.Application.Selection.Range
+        const rgSel = window._Application.Selection.Range
         if (rgSel) rgSel.Select()
       }
       break
     }
     case 'closeDoc': {
-      if (window.Application.Documents.Count < 2) {
+      if (window._Application.Documents.Count < 2) {
         alert('当前只有一个文档，别关了。')
         break
       }
