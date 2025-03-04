@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    // ...其他配置
+  },
+  "include": [
+    "src/**/*",
+    "src/types/**/*.d.ts" // 确保包含类型声明文件
+  ]
+}
