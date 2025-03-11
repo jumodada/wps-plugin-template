@@ -1,54 +1,31 @@
-# React + TypeScript + Vite
+# WPS Office插件开发模板（React + TypeScript + Vite）
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+专为WPS Office插件开发打造的React模板，集成TypeScript类型支持与Vite构建工具，提供丰富的WPS API实操示例。
 
-Currently, two official plugins are available:
+## 模板特点
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🚀 **WPS集成**：预配置Office JS API类型声明
+- 📦 **开箱即用**：包含插件manifest配置示例
+- 🧪 **API体验**：20+个WPS API使用示例（文档）
+- ⚡ **高效开发**：Vite热更新 + React Fast Refresh
+- 🔒 **类型安全**：完整TypeScript类型支持
 
-## Expanding the ESLint configuration
+## 快速开始
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# 安装依赖
+yarn install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# 开发模式（带热更新）
+wpsjs debug
+
+# 生产构建
+wpsjs build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## TODO
+更新中
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 参考资源
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- [WPS开放平台文档](https://qn.cache.wpscdn.cn/)
