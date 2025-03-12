@@ -21,10 +21,24 @@ declare global {
     }
     interface Window {
         _Application: import('wps-jsapi-declare').WpsApplication;
-        ribbon: typeof import('../wpsjs/ribbon').default;
+        ribbon: typeof import('../wpsjs').default;
         openOfficeFileFromSystemDemo: any
         InvokeFromSystemDemo: any
     }
+}
+
+declare module '@/wpsjs/tool/util' {
+  export const WPS_Enum: any;
+  export function GetUrlPath(): string;
+  export function GetRouterHash(): string;
+}
+
+declare module '@/wpsjs/tool/systemdemo' {
+  const SystemDemo: {
+    openOfficeFileFromSystemDemo: any;
+    InvokeFromSystemDemo: any;
+  };
+  export default SystemDemo;
 }
 
 export {};

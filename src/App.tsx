@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import './App.css'
-import ribbon from './wpsjs/ribbon'
-import router from './routes'
+import ribbon from './wpsjs'
+import router from './route.ts'
 
 function App() {
   useEffect(() => {

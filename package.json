@@ -5,10 +5,11 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite --port 3890",
-		"build": "tsc -b && vite build",
+		"dev": "npm run generate:ribbon && vite",
+		"build": "npm run generate:ribbon && vite build",
 		"lint": "eslint .",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"generate-ribbonxml": "ts-node scripts/generate-ribbon.ts"
 	},
 	"dependencies": {
 		"react": "^19.0.0",
@@ -17,6 +18,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.21.0",
+		"@types/node": "^22.13.10",
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
 		"@vitejs/plugin-react": "^4.3.4",
