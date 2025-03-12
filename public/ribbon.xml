@@ -1,0 +1,14 @@
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="ribbon.OnAddinLoad">
+    <ribbon startFromScratch="false">
+        <tabs>
+            <tab id="wpsAddinTab" label="wps加载项示例">
+				<group id="btnDemoGroup" label="group1">
+                    <button id="showMessage" label="弹出消息框" onAction="ribbon.OnAction" getEnabled="ribbon.OnGetEnabled"  getImage="ribbon.GetImage" visible="true" size="large"/>
+                    <button id="showDialog" label="弹对话框网页" onAction="ribbon.OnAction" getEnabled="ribbon.OnGetEnabled"  getImage="ribbon.GetImage" getVisible="ribbon.OnGetVisible" size="large"/>
+                    <button id="showTaskPane" label="弹任务窗格网页" onAction="ribbon.OnAction" getEnabled="ribbon.OnGetEnabled"  getImage="ribbon.GetImage" getVisible="ribbon.OnGetVisible" size="large"/>
+                    <button id="onNewDocumentEvent" label="测试网页" getLabel="ribbon.OnGetLabel" onAction="ribbon.OnAction" getEnabled="ribbon.OnGetEnabled"  getImage="ribbon.GetImage" getVisible="ribbon.OnGetVisible" size="large"/>
+				</group>
+            </tab>
+        </tabs>
+    </ribbon>
+</customUI>

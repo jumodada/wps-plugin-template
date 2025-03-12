@@ -1,5 +1,4 @@
 import { GetUrl } from "./utils.ts";
-console.log(123)
 interface NavbarButton {
     id: string;
     label: string;
